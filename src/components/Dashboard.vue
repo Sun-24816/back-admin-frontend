@@ -40,9 +40,7 @@
         <div>
           <el-avatar class="avater" :icon="UserFilled"></el-avatar>
         </div>
-        <el-button type="primary" class="search" :icon="Search"
-          >搜索</el-button
-        ></el-header
+        <el-button type="primary" class="search" :icon="Search">搜索</el-button></el-header
       >
       <el-main>
         <el-table :data="tableData" style="width: 100%">
@@ -67,16 +65,9 @@
 </template>
 
 <script setup>
-import {
-  Menu as IconMenu,
-  House,
-  Delete,
-  EditPen,
-  Shop,
-  Message,
-  Setting,
-} from "@element-plus/icons-vue";
+import { Menu as IconMenu, House, Delete, EditPen, Shop, Message, Setting } from "@element-plus/icons-vue";
 import { UserFilled } from "@element-plus/icons-vue";
+console.log("abc");
 const tableData = [
   {
     userId: 1,

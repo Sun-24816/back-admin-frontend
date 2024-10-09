@@ -4,46 +4,49 @@
       active-text-color="#ffd04b"
       background-color="#545c64"
       class="el-menu-vertical-demo"
-      default-active="2"
+      :default-active="activeMenuIndex"
       text-color="#fff"
       :collapse="isCollapse"
     >
-      <el-sub-menu index="1">
-        <template #title>
-          <el-icon><location /></el-icon>
-          <span>Navigator One</span>
-        </template>
-        <el-menu-item-group title="Group One">
-          <el-menu-item index="1-1">item one</el-menu-item>
-          <el-menu-item index="1-2">item two</el-menu-item>
-        </el-menu-item-group>
-        <el-menu-item-group title="Group Two">
-          <el-menu-item index="1-3">item three</el-menu-item>
-        </el-menu-item-group>
-        <el-sub-menu index="1-4">
-          <template #title>item four</template>
-          <el-menu-item index="1-4-1">item one</el-menu-item>
+      <template v-for="item in menuInfo" :key="item.key">
+        <el-sub-menu v-if="item.children.length" :index="item.key">
+          <template #title>
+            <el-icon><location /></el-icon>
+            <span>{{ item.label }}</span>
+          </template>
+          <el-menu-item
+            v-for="subItem in item.children"
+            :key="subItem.key"
+            :index="subItem.key"
+            @click="handleRouteJump(subItem.path)"
+          >
+            {{ subItem.label }}
+          </el-menu-item>
         </el-sub-menu>
-      </el-sub-menu>
-      <el-menu-item index="2">
-        <el-icon></el-icon>
-        <span>Navigator Two</span>
-      </el-menu-item>
-      <el-menu-item index="3" disabled>
-        <el-icon><document /></el-icon>
-        <span>Navigator Three</span>
-      </el-menu-item>
-      <el-menu-item index="4">
-        <el-icon><setting /></el-icon>
-        <span>Navigator Four</span>
-      </el-menu-item>
+        <el-menu-item v-else :index="item.key" @click="handleRouteJump(item.path)">
+          <el-icon><location /></el-icon>
+          <span>{{ item.label }}</span>
+        </el-menu-item>
+      </template>
     </el-menu>
   </div>
 </template>
 
 <script setup>
 import { ref } from "vue";
-const props = defineProps(["isCollapse"]);
+import { useRouter } from "vue-router";
+import { useStore } from "vuex";
+
+const props = defineProps(["isCollapse", "menuInfo"]);
+const router = useRouter();
+const store = useStore();
+
+const activeMenuIndex = ref("1-1");
+
+const handleRouteJump = (path) => {
+  router.push(path);
+  store.commit("setActiveMenuPath", path);
+};
 </script>
 <style scoped>
 .menu {

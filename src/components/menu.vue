@@ -33,7 +33,7 @@
 </template>
 
 <script setup>
-import { ref } from "vue";
+import { ref, watchEffect } from "vue";
 import { useRouter } from "vue-router";
 import { useStore } from "vuex";
 
@@ -43,9 +43,12 @@ const store = useStore();
 
 const activeMenuIndex = ref("1-1");
 
+watchEffect(() => {
+  activeMenuIndex.value = router.currentRoute.value.path.split("/path")[1];
+});
+
 const handleRouteJump = (path) => {
-  router.push(path);
-  store.commit("setActiveMenuPath", path);
+  router.push("/main" + path);
 };
 </script>
 <style scoped>

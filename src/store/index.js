@@ -1,15 +1,9 @@
 import { createStore } from "vuex";
 
 export default createStore({
-  state: {
-    activeMenuPath: "",
-  },
+  state: {},
   getters: {},
-  mutations: {
-    setActiveMenuPath(state, path) {
-      state.activeMenuPath = path;
-    },
-  },
+  mutations: {},
   actions: {},
   modules: {},
 });

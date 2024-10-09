@@ -8,22 +8,23 @@
 
 <script setup>
 import { watchEffect, ref } from "vue";
-import { useStore } from "vuex";
+import { useRouter } from "vue-router";
 
 const props = defineProps(["menuInfo"]);
-const store = useStore();
+const router = useRouter();
 
 const pathArr = ref([]);
 
 watchEffect(() => {
-  const activePath = store.state.activeMenuPath;
+  const activePath = router.currentRoute.value.path.split("/main")[1];
   pathArr.value = [];
+
   props.menuInfo.map((item) => {
     if (!item.children.length) {
       if (item.path === activePath) {
         pathArr.value.push({
           label: item.label,
-          path: item.path,
+          path: "/main" + item.path,
         });
       }
     } else {

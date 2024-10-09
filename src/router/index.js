@@ -10,8 +10,8 @@ import path23 from "../components/path2/path2-3.vue";
 
 import path3 from "../components/path3/path3.vue";
 
-import admin from "../components/admin.vue";
-import main from "../components/main.vue";
+import admin from "../pages/admin.vue";
+import main from "../pages/main.vue";
 
 const mainChildrenRoutes = [
   {

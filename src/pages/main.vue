@@ -19,8 +19,8 @@
   </el-container>
 </template>
 <script setup>
-import Menu from "./menu.vue";
-import Breadcrumb from "./breadcrumb.vue";
+import Menu from "../base-ui/menu.vue";
+import Breadcrumb from "../base-ui/breadcrumb.vue";
 import { ref } from "vue";
 
 const isCollapse = ref(false);

@@ -74,7 +74,7 @@ const router = createRouter({
   routes,
 });
 router.beforeEach((to, from, next) => {
-  const isJumpToMain = to.path != "/" && to.path != "/admin";
+  const isJumpToMain = !["/", "/admin"].includes(to.path);
   // 没权限 & 跳转到非登录页
   if (!Boolean(localStorage.getItem("token")) && isJumpToMain) {
     //只有登录过之后 才能跳转/main 没登录过的话 跳转到/admin

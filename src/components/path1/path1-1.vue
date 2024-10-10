@@ -201,7 +201,9 @@ const handleEdit = (index, rowData) => {
 
 const handleDelete = (index) => {
   //模拟删除时 发送网络请求 并且重新拉取table列表的过程
-  tableData.value.splice(index, 1);
+  const startIndex = (paginationInfo.value.currentPage - 1) * paginationInfo.value.pageSize + index;
+  data.splice(startIndex, 1);
+  getTableData();
 };
 
 const handleConfirm = () => {

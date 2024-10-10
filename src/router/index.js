@@ -12,6 +12,7 @@ import path3 from "../components/path3/path3.vue";
 
 import admin from "../pages/admin.vue";
 import main from "../pages/main.vue";
+import notFound from "../pages/notFound.vue";
 
 const mainChildrenRoutes = [
   {
@@ -66,6 +67,11 @@ const routes = [
     component: main,
     redirect: "/main/" + mainChildrenRoutes[0].path,
     children: mainChildrenRoutes,
+  },
+  {
+    path: "/:pathMatch(.*)*",
+    component: notFound,
+    name: "notFound",
   },
 ];
 

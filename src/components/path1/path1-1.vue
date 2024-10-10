@@ -12,7 +12,7 @@
     <div class="table">
       <el-table :data="tableData" height="600" style="width: 100%">
         <el-table-column type="selection" width="55" show-overflow-tooltip />
-        <el-table-column label="序号" width="120" show-overflow-tooltip>
+        <el-table-column label="用户id" width="120" show-overflow-tooltip>
           <template #default="scope">{{ scope.row.userId }}</template>
         </el-table-column>
         <el-table-column property="name" label="用户名" width="120" show-overflow-tooltip />
@@ -204,6 +204,7 @@ const handleDelete = (index) => {
   const startIndex = (paginationInfo.value.currentPage - 1) * paginationInfo.value.pageSize + index;
   data.splice(startIndex, 1);
   getTableData();
+  paginationInfo.value.totalNum = data.length;
 };
 
 const handleConfirm = () => {

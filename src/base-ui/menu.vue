@@ -3,7 +3,7 @@
     <el-menu
       active-text-color="#ffd04b"
       background-color="#545c64"
-      class="el-menu-vertical-demo"
+      class="el-menu"
       :default-active="activeMenuIndex"
       text-color="#fff"
       :collapse="isCollapse"
@@ -58,5 +58,8 @@ const handleRouteJump = (path) => {
 }
 .el-menu {
   height: 100%;
+}
+.el-menu:not(.el-menu--collapse) {
+  width: 200px;
 }
 </style>

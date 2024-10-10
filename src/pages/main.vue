@@ -62,7 +62,7 @@ const handleCollapseMenu = () => {
 
 <style>
 .aside {
-  transition: all 0.5s linear;
+  transition: all 0.3s linear;
 }
 .top-nav {
   display: flex;

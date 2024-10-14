@@ -22,7 +22,7 @@
       <el-button type="primary" @click="handleAddData">新增数据</el-button>
     </div>
     <div class="table">
-      <el-table :data="tableData" v-loading="isLoading" height="600" style="width: 100%">
+      <el-table :data="tableData" v-loading="isLoading" height="500" style="width: 100%">
         <el-table-column type="selection" width="55" show-overflow-tooltip />
         <el-table-column label="用户id" width="120" show-overflow-tooltip>
           <template #default="scope">{{ scope.row.userId }}</template>
@@ -103,7 +103,7 @@ const data = [
     userId: 4,
     name: "YYDS",
     address: "合肥",
-    telephone: "17612345278",
+    telephone: "27622345278",
     createTime: "2023-08-19 13:57:34",
     updateTime: "2022-08-19 13:57:34",
   },
@@ -111,7 +111,7 @@ const data = [
     userId: 5,
     name: "CY YYDS",
     address: "南昌",
-    telephone: "17612345678",
+    telephone: "27622345678",
     createTime: "2022-08-19 13:57:34",
     updateTime: "2022-08-19 13:57:34",
   },
@@ -119,7 +119,7 @@ const data = [
     userId: 6,
     name: "LXL YYDS",
     address: "成都",
-    telephone: "17612345679",
+    telephone: "27622345679",
     createTime: "2021-08-19 13:57:34",
     updateTime: "2022-08-19 13:57:34",
   },
@@ -256,7 +256,6 @@ watchEffect(() => {
       notEmptyKeyData.push(key);
     }
   });
-
   //对非空字段过滤
   const filterFn = (item) => {
     let filters = true;
@@ -265,12 +264,19 @@ watchEffect(() => {
         //对时间进行特殊处理 筛选出当天的数据即可 而不是精确到每秒
         filters = filters && item[key].includes(selectForms.value[key].split(" ")[0]);
       } else {
-        filters = filters && item[key].includes(selectForms.value[key]);
+        filters = filters && String(item[key]).includes(selectForms.value[key]);
       }
     });
     return filters;
   };
-  tableData.value = data.filter(filterFn);
+  console.log(paginationInfo.value.currentPage, "currentPage");
+
+  const startIndex = (paginationInfo.value.currentPage - 1) * paginationInfo.value.pageSize;
+  const filterData = data.filter(filterFn);
+  paginationInfo.value.totalNum = filterData.length;
+  tableData.value = filterData.slice(startIndex, startIndex + paginationInfo.value.pageSize);
+  console.log(paginationInfo.value.currentPage, "currentPage");
+
   //延时1s模拟发送网络请求的时间
   setTimeout(() => {
     isLoading.value = false;
@@ -298,7 +304,7 @@ watchEffect(() => {
 }
 .table {
   margin-top: 60px;
-  height: 600px;
+  height: 500px;
 }
 .pagination {
   width: 100%;

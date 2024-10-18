@@ -1,0 +1,22 @@
+1 router index.js name 属性为了 给某个路径，传递参数 和 路径跳转
+  1.1 this.$router.push({ name: 'main', params: { id: 123 } });
+  1.2 this.$router.push({ name: 'main' })
+
+2 mainChildren [
+    {
+        path:"path1-1",  // 这里不能加 / ， 加上/这个位置的绝对路径开始
+        component: path11,
+    }
+]
+
+3 :key 绑定的作用
+  3.1 避免渲染错误
+      key用来标记当前标签，每个标签都不一致
+  3.2 优化渲染技能
+      当有标记后，vue会根据index检查，只重新渲染有变化的标签组件
+  3.3 提高复用效率
+      当列表先
+
+4 :key 和 :index 的区别 
+  :key 为了标记一个组件，使其能够正确快速的渲染,正确的意思是使用key做标记，当前标签的属性不能添加到其他属性中去
+  :index 为了标记哪个被点击或被选中

@@ -6,7 +6,6 @@
       style="height: 100%"
       text-color="#ffffff"
       :default-active="activeMenuIndex"
-      @select="handleMenuSelect"
     >
       <template v-for="item in menuInfo" :index="item.key">
         <el-sub-menu v-if="item.children.length" :index="item.key">
@@ -14,13 +13,20 @@
             <el-icon><Menu /></el-icon>
             {{ item.label }}
           </template>
-          <el-menu-item v-for="subItem in item.children" :index="subItem.key">
+          <el-menu-item
+            v-for="subItem in item.children"
+            :index="subItem.key"
+            @click="handleRouteJump(subItem.path)"
+          >
             {{ subItem.label }}
           </el-menu-item>
         </el-sub-menu>
-        <el-menu-item v-else :index="item.key"
-          ><el-icon><Menu /></el-icon>{{ item.label }}</el-menu-item
-        >
+        <el-menu-item
+          v-else
+          :index="item.key"
+          @click="handleRouteJump(item.path)"
+          ><el-icon><Menu /></el-icon>{{ item.label }}
+        </el-menu-item>
       </template>
     </el-menu>
   </div>
@@ -38,8 +44,8 @@ watchEffect(() => {
   activeMenuIndex.value = router.currentRoute.value.path.split("/path")[1];
 });
 
-const handleMenuSelect = (index) => {
-  router.push("/main/path" + index);
+const handleRouteJump = (path) => {
+  router.push("/main" + path);
 };
 </script>
 <style scoped>

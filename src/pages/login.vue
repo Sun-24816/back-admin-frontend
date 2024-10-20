@@ -23,7 +23,9 @@
 import { ref } from "vue";
 import { ElMessage } from "element-plus";
 import { useRouter } from "vue-router";
+import { useStore } from "vuex"; // 导入 useStore
 const router = useRouter();
+const store = useStore();
 let hasAuthority = ref(false);
 const rules = {
   userName: [
@@ -52,6 +54,14 @@ const handleLogin = () => {
   ) {
     hasAuthority.value = "true";
     localStorage.setItem("token", "登录成功");
+    localStorage.setItem("userName", formData.value.userName);
+    store.dispatch("login", {
+      userName: formData.value.userName,
+    });
+    const test = store.state.userName;
+    console.log("保存成功！！！");
+    console.log(formData.value.userName);
+    console.log(test);
     ElMessage({
       message: "登录成功",
       type: "success",

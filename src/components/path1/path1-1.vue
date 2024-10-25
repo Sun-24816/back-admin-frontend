@@ -21,7 +21,9 @@
         </el-row>
       </el-form>
     </el-form>
-    <div class="add-btn"><el-button type="primary">新增数据</el-button></div>
+    <div class="add-btn">
+      <el-button type="primary" @click="handleInserData">新增数据</el-button>
+    </div>
     <div class="table">
       <el-table
         :data="tableData"
@@ -67,30 +69,64 @@
             <el-button
               size="small"
               type="danger"
-              @click="handleDelete(scope.$index)"
+              @click="openDeleteDialog(scope.$index)"
               >删除</el-button
             >
           </template>
         </el-table-column>
       </el-table>
     </div>
-
+    <div class="pagination">
+      <el-pagination
+        layout="total,sizes,prev,pager,next,jumper"
+        v-model:current-page="paginationInfo.currentPage"
+        v-model:page-size="paginationInfo.pageSize"
+        background
+        :total="paginationInfo.totalNum"
+        @size-change="handleSizeChange"
+        @current-change="handleCurrentChange"
+        :page-sizes="paginationInfo.pageSizeDefine"
+      >
+      </el-pagination>
+    </div>
     <editDialog
       :isShow="detailDialogVisible"
       :detailData="propDetailData"
       @editDialogClose="handerEditDialogClose"
       @editConfirm="handleEditConfirm"
     ></editDialog>
+    <el-dialog title="确认删除" v-model="detailDeleteVisible" width="30%">
+      <span>确定要删除该项吗？此操作不可撤销。</span>
+
+      <template #footer>
+        <!-- 取消按钮 -->
+        <el-button @click="handleCancelDelete">取消</el-button>
+
+        <!-- 确认按钮 -->
+        <el-button type="primary" @click="handleConfirmDelete">确认</el-button>
+      </template>
+    </el-dialog>
+    <insertDialog
+      :isShow="insertDialogVisible"
+      @closeInsertDialog="handleCloserInsertDialog"
+      :colomns="columns"
+    ></insertDialog>
   </div>
 </template>
 <script setup>
 import { ref, watchEffect } from "vue";
 import editDialog from "@/base-ui/editDialog.vue";
+import insertDialog from "@/base-ui/insertDialog.vue";
 const detailDialogVisible = ref(false);
+const detailDeleteVisible = ref(false);
+const insertDialogVisible = ref(false);
+const deleteIndex = ref();
 const propDetailData = ref({});
 const isLoading = ref(false);
 //实际的详情数据
+
 const detailData = ref({});
+
 const columns = [
   {
     label: "用户id",
@@ -217,6 +253,46 @@ const data = [
   },
 ];
 
+const openDeleteDialog = (index) => {
+  detailDeleteVisible.value = true;
+  console.log("进入opendelete");
+  console.log("要删除的值");
+  deleteIndex.value = index;
+};
+
+const handleConfirmDelete = () => {
+  data.splice(deleteIndex.value, 1);
+  getTableData();
+  paginationInfo.value.totalNum = data.length;
+  detailDeleteVisible.value = false;
+};
+
+const handleCancelDelete = () => {
+  detailDeleteVisible.value = false;
+};
+
+const handleCloserInsertDialog = () => {
+  insertDialogVisible.value = false;
+};
+
+// 控制一个增加数据的表单
+const handleInserData = () => {
+  insertDialogVisible.value = true;
+  console.log("新增加数据");
+};
+
+// 展示 总数 ，当前页数 一页总数
+const paginationInfo = ref({
+  totalNum: data.length,
+  currentPage: 1,
+  pageSize: 10,
+  pageSizeDefine: [10, 20, 30],
+});
+
+const closeDleteDialog = () => {
+  detailDeleteVisible.value = false;
+};
+
 const tableData = ref([...data.slice(0, 10)]);
 
 const selectForms = ref({
@@ -228,7 +304,13 @@ const selectForms = ref({
   updateTime: "",
 });
 
-const handleDelete = () => {};
+const handleDelete = (index) => {
+  console.log("找到删除的位置");
+  data.splice(index, 1);
+  getTableData();
+  detailDeleteVisible.value = false;
+  console.log(index);
+};
 
 const handleEdit = (row) => {
   detailDialogVisible.value = true;
@@ -253,12 +335,32 @@ const handerEditDialogClose = () => {
   console.log("执行 handerEditDialogClose");
 };
 
-watchEffect(() => {
-  console.log("path1-1 watchEffect userId");
-  console.log(selectForms.value);
-  console.log(selectForms["userId"]);
-  // console.log(selectForms[userId]);
-});
+const getTableData = () => {
+  isLoading.value = true;
+  const startIndex =
+    (paginationInfo.value.currentPage - 1) * paginationInfo.value.pageSize;
+  tableData.value = data.slice(
+    startIndex,
+    startIndex + paginationInfo.value.pageSize
+  );
+  //延时1s模拟发送网络请求的时间
+  setTimeout(() => {
+    isLoading.value = false;
+  }, 1000);
+};
+
+const handleSizeChange = (currentSize) => {
+  paginationInfo.value.pageSize = currentSize;
+  console.log("执行currentChange");
+  console.log("输出当前页面的大小");
+  console.log(currentSize);
+  getTableData();
+};
+
+const handleCurrentChange = (currentPage) => {
+  paginationInfo.value.currentPage = currentPage;
+  getTableData();
+};
 
 watchEffect(() => {
   isLoading.value = true;
@@ -282,6 +384,46 @@ watchEffect(() => {
     isLoading.value = false;
   }, 1000);
 });
+
+watchEffect(() => {
+  console.log("进入查找key");
+  isLoading.value = true;
+  const notEmptyKeyData = [];
+  Object.keys(selectForms.value).map((key) => {
+    if (selectForms.value[key]) {
+      notEmptyKeyData.push(key);
+    }
+  });
+
+  const filterFN = (item) => {
+    console.log(item);
+    console.log("filterFn");
+    let flag = true;
+
+    notEmptyKeyData.map((key) => {
+      let filterValue = String(selectForms.value[key] || "");
+      let itemKey = String(item[key]);
+      if (key.includes("Time")) {
+        flag = flag && item[key].includes(selectForms.value[key].split(" ")[0]);
+        // item[key].includes(selectForms.value[key].split(" ")[0]);
+      } else {
+        flag = flag && itemKey.includes(filterValue);
+      }
+    });
+
+    return flag;
+  };
+  const startIndex =
+    (paginationInfo.value.currentPage - 1) * paginationInfo.value.pageSize;
+  tableData.value = data
+    .filter(filterFN)
+    .slice(startIndex, startIndex + paginationInfo.value.pageSize);
+  console.log("输出非空字段");
+  console.log(notEmptyKeyData);
+  setTimeout(() => {
+    isLoading.value = false;
+  }, 1000);
+});
 </script>
 <style scoped>
 .dashBoard {
@@ -291,6 +433,13 @@ watchEffect(() => {
 
 .add-btn {
   width: 100%;
+  display: flex;
+  justify-content: end;
+}
+
+.pagination {
+  width: 100%;
+  margin-top: 30px;
   display: flex;
   justify-content: end;
 }

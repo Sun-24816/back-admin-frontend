@@ -109,6 +109,7 @@
     <insertDialog
       :isShow="insertDialogVisible"
       @closeInsertDialog="handleCloserInsertDialog"
+      @addDataConfirm="handleAddDataConfirm"
       :colomns="columns"
     ></insertDialog>
   </div>
@@ -117,6 +118,7 @@
 import { ref, watchEffect } from "vue";
 import editDialog from "@/base-ui/editDialog.vue";
 import insertDialog from "@/base-ui/insertDialog.vue";
+import { ElMessage } from "element-plus";
 const detailDialogVisible = ref(false);
 const detailDeleteVisible = ref(false);
 const insertDialogVisible = ref(false);
@@ -328,6 +330,36 @@ const handleEditConfirm = (detail) => {
   detailData.value = detail.value;
   console.log(detailData.value);
   console.log("createTime:", detailData.value.createTime); // 确保可以访问
+};
+
+const handleAddDataConfirm = (detail) => {
+  insertDialogVisible.value = false;
+  let flag = true;
+  data.forEach((item) => {
+    if (String(item.userId) === String(detail.value.userId)) {
+      flag = false; // 找到匹配项，设置 flag 为 false
+    }
+  });
+
+  if (flag) {
+    data.push(detail.value);
+    paginationInfo.value.totalNum = data.length;
+    getTableData();
+    ElMessage({
+      type: "success",
+      message: "添加成功",
+    });
+  } else {
+    ElMessage({
+      type: "erroe",
+      message: "添加失败，当前用户id已存在",
+    });
+  }
+  // console.log("添加结束 ");
+  // getTableData();
+  // detailData.value = detail.value;
+  // console.log(detailData.value);
+  // console.log("createTime:", detailData.value.createTime); // 确保可以访问
 };
 
 const handerEditDialogClose = () => {

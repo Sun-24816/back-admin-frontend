@@ -1,0 +1,28 @@
+一 重点总结
+     1 需求分析、页面设计
+     2 布局
+     3 数据交互展示
+     4 事件处理
+     本质就是页面布局和事件处理
+二 vue语法
+     1 v-for
+     2 v-if
+     3 v-model
+     4 v-bind
+     5 @click
+     6 路由跳转 router.push("")
+     7 watchEffect
+     8 ref
+     9 props 父子组件传递数据
+     10 emits 父子组件传递事件
+     11 map,foreach,slice,splice,push
+三 element-plus 组件使用
+     1 el-form
+     2 el-input
+     3 el-dialog
+     4 el-menu
+     5 el-button
+     6 el-breadCrumb
+     7 el-pagination
+     8 el-date-picker
+     9 el-table
